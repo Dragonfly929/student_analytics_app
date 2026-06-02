@@ -45,7 +45,7 @@ def show():
     fig.update_layout(title="Pearson Correlation Matrix",
                       template=PLOT_THEME, height=600,
                       paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Top correlations with target
     if "Placement_Status" in df.columns:
@@ -62,7 +62,7 @@ def show():
         )
         fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                            yaxis_title="", xaxis_title="Pearson r", height=400)
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width="stretch")
 
     # ── 2. Pairwise correlation explorer ──────────────────────────────────────
     st.markdown('<div class="section-header">2 · Pairwise Correlation Explorer</div>', unsafe_allow_html=True)
@@ -94,33 +94,35 @@ def show():
                       template=PLOT_THEME,
                       title=f"{va} vs {vb}  (r={r:.3f})")
     fig3.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3, width="stretch")
 
     # ── 3. Statistical tests ──────────────────────────────────────────────────
     st.markdown('<div class="section-header">3 · Statistical Tests</div>', unsafe_allow_html=True)
     tab1, tab2, tab3 = st.tabs(["T-test (placed vs not)", "Normality (Shapiro-Wilk)", "ANOVA by College Tier"])
 
     with tab1:
-        if "Placement_Status" in df.columns:
+        if "Salary_LPA" in df.columns:
             sel_num = st.selectbox("Numeric variable", num_cols,
                                    index=num_cols.index("CGPA") if "CGPA" in num_cols else 0,
                                    key="ttest_col")
-            g1 = df[df["Placement_Status"] == 1][sel_num].dropna()
-            g0 = df[df["Placement_Status"] == 0][sel_num].dropna()
+            median_sal = df["Salary_LPA"].median()
+            df_ttest = df.copy()
+            df_ttest["Salary_Group"] = (df_ttest["Salary_LPA"] >= median_sal).map(
+                {True: "High Salary", False: "Low Salary"})
+            g1 = df_ttest[df_ttest["Salary_LPA"] >= median_sal][sel_num].dropna()
+            g0 = df_ttest[df_ttest["Salary_LPA"] < median_sal][sel_num].dropna()
             t, p = stats.ttest_ind(g1, g0)
             col_a, col_b, col_c = st.columns(3)
             col_a.metric("t-statistic", f"{t:.4f}")
             col_b.metric("p-value", f"{p:.2e}")
-            col_c.metric("Significant (α=0.05)", "Yes ✅" if p < 0.05 else "No ❌")
-
-            fig_t = px.violin(df, x="Placement_Status", y=sel_num,
-                              box=True, color="Placement_Status",
-                              color_discrete_map={0: "#f78166", 1: "#3fb950"},
+            col_c.metric("Significant (a=0.05)", "Yes" if p < 0.05 else "No")
+            fig_t = px.violin(df_ttest, x="Salary_Group", y=sel_num,
+                              box=True, color="Salary_Group",
+                              color_discrete_sequence=["#f78166", "#3fb950"],
                               template=PLOT_THEME,
-                              title=f"{sel_num} distribution: Placed vs Not Placed",
-                              labels={"Placement_Status": "Placed"})
+                              title=f"{sel_num} — High vs Low Salary group")
             fig_t.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-            st.plotly_chart(fig_t, use_container_width=True)
+            st.plotly_chart(fig_t, width="stretch")
 
     with tab2:
         sel_norm = st.selectbox("Variable", num_cols, key="norm_col")
@@ -146,7 +148,7 @@ def show():
         fig_qq.update_layout(title=f"Q-Q Plot · {sel_norm}", template=PLOT_THEME,
                              paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                              xaxis_title="Theoretical quantiles", yaxis_title="Sample quantiles")
-        st.plotly_chart(fig_qq, use_container_width=True)
+        st.plotly_chart(fig_qq, width="stretch")
 
     with tab3:
         if "College_Tier" in df.columns:
@@ -167,7 +169,7 @@ def show():
                             color_discrete_sequence=COLOR_SEQ, template=PLOT_THEME,
                             title=f"{anova_var} by College Tier")
             fig_an.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False)
-            st.plotly_chart(fig_an, use_container_width=True)
+            st.plotly_chart(fig_an, width="stretch")
 
     # ── 4. Anomaly detection ──────────────────────────────────────────────────
     st.markdown('<div class="section-header">4 · Anomaly Detection</div>', unsafe_allow_html=True)
@@ -208,11 +210,11 @@ def show():
                             template=PLOT_THEME,
                             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                             xaxis_title="Row index", yaxis_title=anom_col)
-    st.plotly_chart(fig_anom, use_container_width=True)
+    st.plotly_chart(fig_anom, width="stretch")
 
     if n_outliers > 0:
         with st.expander(f"🔎 Show {min(n_outliers, 50)} outlier rows"):
-            st.dataframe(df[mask].head(50), use_container_width=True)
+            st.dataframe(df[mask].head(50), width="stretch")
 
     # Multi-column anomaly summary
     st.markdown("**Anomaly count per numeric column (IQR method):**")
@@ -222,4 +224,4 @@ def show():
         anom_summary.append({"Column": col, "Outliers": int(m.sum()), "Pct": round(m.mean()*100, 2),
                               "Lower bound": round(lo, 3), "Upper bound": round(hi, 3)})
     anom_df = pd.DataFrame(anom_summary).sort_values("Outliers", ascending=False)
-    st.dataframe(anom_df, use_container_width=True, hide_index=True)
+    st.dataframe(anom_df, width="stretch", hide_index=True)

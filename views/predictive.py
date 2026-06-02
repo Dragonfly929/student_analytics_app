@@ -120,7 +120,7 @@ def show():
                 fig_cm.update_layout(title="Confusion Matrix", template=PLOT_THEME,
                                      paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                      xaxis_title="Predicted", yaxis_title="Actual", height=350)
-                st.plotly_chart(fig_cm, use_container_width=True)
+                st.plotly_chart(fig_cm, width="stretch")
 
             with col_r:
                 fpr, tpr, _ = roc_curve(y_test, y_prob)
@@ -133,7 +133,7 @@ def show():
                 fig_roc.update_layout(title="ROC Curve", template=PLOT_THEME,
                                       paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                       xaxis_title="FPR", yaxis_title="TPR", height=350)
-                st.plotly_chart(fig_roc, use_container_width=True)
+                st.plotly_chart(fig_roc, width="stretch")
 
             if model_name == "Random Forest":
                 fi = pd.DataFrame({"Feature": feat_cls, "Importance": clf.feature_importances_})
@@ -143,7 +143,7 @@ def show():
                                 title="Feature Importances", template=PLOT_THEME)
                 fig_fi.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                      height=420, showlegend=False)
-                st.plotly_chart(fig_fi, use_container_width=True)
+                st.plotly_chart(fig_fi, width="stretch")
 
             st.text(classification_report(y_test, y_pred, target_names=["Low Salary", "High Salary"]))
 
@@ -237,7 +237,7 @@ def show():
                 fig_avp.update_layout(title="Actual vs Predicted Salary", template=PLOT_THEME,
                                       paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                       xaxis_title="Actual (LPA)", yaxis_title="Predicted (LPA)")
-                st.plotly_chart(fig_avp, use_container_width=True)
+                st.plotly_chart(fig_avp, width="stretch")
 
             with col_r:
                 residuals = y_test.values - y_pred_r
@@ -245,7 +245,7 @@ def show():
                                        color_discrete_sequence=["#3fb950"], template=PLOT_THEME)
                 fig_res.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                       xaxis_title="Residual", yaxis_title="Count")
-                st.plotly_chart(fig_res, use_container_width=True)
+                st.plotly_chart(fig_res, width="stretch")
 
             if reg_model_name == "Random Forest":
                 fi_r = pd.DataFrame({"Feature": feat_reg, "Importance": reg.feature_importances_})
@@ -255,7 +255,7 @@ def show():
                                   title="Feature Importances (Salary)", template=PLOT_THEME)
                 fig_fi_r.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                        height=380, showlegend=False)
-                st.plotly_chart(fig_fi_r, use_container_width=True)
+                st.plotly_chart(fig_fi_r, width="stretch")
 
         if "reg_model" in st.session_state and "reg_scaler" in st.session_state:
             st.markdown('<div class="section-header">🔮 Predict Salary for New Student</div>', unsafe_allow_html=True)

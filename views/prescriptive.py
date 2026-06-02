@@ -147,7 +147,7 @@ def show():
                               template=PLOT_THEME, xaxis_tickangle=-35,
                               paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                               yaxis_title="Δ Probability (pp)")
-        st.plotly_chart(fig_imp, use_container_width=True)
+        st.plotly_chart(fig_imp, width="stretch")
 
         top3 = imp_df.head(3)
         for _, row_r in top3.iterrows():
@@ -155,7 +155,7 @@ def show():
                 st.markdown(f'<div class="success-box">⬆️ <b>{row_r["Feature"]}</b> → +{row_r["ΔHigh-Salary Prob (pp)"]:.1f} pp high-salary probability · +{row_r["ΔSalary (LPA)"]:.2f} LPA salary</div>', unsafe_allow_html=True)
 
         with st.expander("📋 Full improvement table"):
-            st.dataframe(imp_df, use_container_width=True, hide_index=True)
+            st.dataframe(imp_df, width="stretch", hide_index=True)
 
     # ═══ TAB 2: What-If Scenario Simulator ══════════════════════
     with tab2:
@@ -211,7 +211,7 @@ def show():
 
         res_df = pd.DataFrame(results)
         st.markdown("---")
-        st.dataframe(res_df, use_container_width=True, hide_index=True)
+        st.dataframe(res_df, width="stretch", hide_index=True)
 
         c1, c2 = st.columns(2)
         with c1:
@@ -219,13 +219,13 @@ def show():
                           color="High-Salary Prob (%)", color_continuous_scale="Blues",
                           title="High-Salary Probability by Scenario", template=PLOT_THEME)
             fig1.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False)
-            st.plotly_chart(fig1, use_container_width=True)
+            st.plotly_chart(fig1, width="stretch")
         with c2:
             fig2 = px.bar(res_df, x="Scenario", y="Est. Salary (LPA)",
                           color="Est. Salary (LPA)", color_continuous_scale="Greens",
                           title="Expected Salary by Scenario", template=PLOT_THEME)
             fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False)
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width="stretch")
 
         best = res_df.loc[res_df["Est. Salary (LPA)"].idxmax()]
         st.markdown(f'<div class="success-box">🏆 Best outcome: <b>{best["Scenario"]}</b> → <b>{best["Est. Salary (LPA)"]:.2f} LPA</b> · High-salary prob <b>{best["High-Salary Prob (%)"]:.1f}%</b></div>', unsafe_allow_html=True)
@@ -276,7 +276,7 @@ def show():
                                    template=PLOT_THEME,
                                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                    xaxis_title="Predicted Salary (LPA)", yaxis_title="Students")
-            st.plotly_chart(fig_dist, use_container_width=True)
+            st.plotly_chart(fig_dist, width="stretch")
 
             # All-feature ROI
             roi_data = []
@@ -304,10 +304,10 @@ def show():
                              template=PLOT_THEME)
             fig_roi.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                    xaxis_tickangle=-30, showlegend=False)
-            st.plotly_chart(fig_roi, use_container_width=True)
+            st.plotly_chart(fig_roi, width="stretch")
 
             top_inst = roi_df.iloc[0]
             st.markdown(f'<div class="success-box">🏆 Best ROI: invest in <b>{top_inst["Feature"]}</b> → average salary gain of <b>+{top_inst["Avg Salary Gain (LPA)"]:.4f} LPA</b> per student</div>', unsafe_allow_html=True)
 
             with st.expander("📋 Full ROI table"):
-                st.dataframe(roi_df, use_container_width=True, hide_index=True)
+                st.dataframe(roi_df, width="stretch", hide_index=True)

@@ -25,7 +25,7 @@ def show():
             <span style="color:var(--muted);">20,000 rows · 20 columns · no missing values</span>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("▶ Load default dataset", use_container_width=True):
+        if st.button("▶ Load default dataset", width="stretch"):
             df = load_df(DEFAULT_PATH, "Default (bundled CSV)")
             st.success(f"✅ Loaded {len(df):,} rows × {len(df.columns)} columns")
 
@@ -39,7 +39,7 @@ def show():
         """, unsafe_allow_html=True)
         uploaded = st.file_uploader("Upload CSV", type=["csv"], label_visibility="collapsed")
         if uploaded is not None:
-            if st.button("▶ Load uploaded file", use_container_width=True):
+            if st.button("▶ Load uploaded file", width="stretch"):
                 df = load_df(uploaded, f"Uploaded: {uploaded.name}")
                 st.success(f"✅ Loaded {len(df):,} rows × {len(df.columns)} columns")
 
@@ -53,7 +53,7 @@ def show():
 
         with tab1:
             n = st.slider("Rows to show", 5, 50, 10)
-            st.dataframe(df.head(n), use_container_width=True)
+            st.dataframe(df.head(n), width="stretch")
 
         with tab2:
             schema = pd.DataFrame({
@@ -63,7 +63,7 @@ def show():
                 "Unique": df.nunique().values,
                 "Sample": [str(df[c].iloc[0]) for c in df.columns]
             })
-            st.dataframe(schema, use_container_width=True, hide_index=True)
+            st.dataframe(schema, width="stretch", hide_index=True)
 
         with tab3:
             col_a, col_b, col_c, col_d = st.columns(4)

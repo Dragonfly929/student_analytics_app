@@ -197,17 +197,17 @@ with st.sidebar:
 
 # ── Route pages ──────────────────────────────────────────────────────────────
 if page == "📂 Data Loading":
-    from pages.data_loading import show
+    from views.data_loading import show
     show()
 elif page == "📊 Descriptive Analysis":
-    from pages.descriptive import show
+    from views.descriptive import show
     show()
 elif page == "🔍 Diagnostic Analysis":
-    from pages.diagnostic import show
+    from views.diagnostic import show
     show()
 elif page == "🤖 Predictive Analysis":
-    from pages.predictive import show
+    from views.predictive import show
     show()
 elif page == "🧭 Prescriptive Analysis":
-    from pages.prescriptive import show
+    from views.prescriptive import show
     show()

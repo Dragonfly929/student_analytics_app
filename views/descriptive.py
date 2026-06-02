@@ -28,7 +28,7 @@ def show():
     desc = df[num_cols].describe().T
     desc["skewness"] = df[num_cols].skew()
     desc["kurtosis"] = df[num_cols].kurt()
-    st.dataframe(desc.style.format("{:.2f}"), use_container_width=True)
+    st.dataframe(desc.style.format("{:.2f}"), width="stretch")
 
     # Top-level KPIs
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -54,12 +54,12 @@ def show():
                                color_discrete_sequence=["#58a6ff"],
                                template=PLOT_THEME)
             fig.update_layout(bargap=0.05, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with col_right:
             fig2 = px.box(df, y=col_choice, title=f"Boxplot · {col_choice}",
                           color_discrete_sequence=["#3fb950"], template=PLOT_THEME)
             fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width="stretch")
 
         # Stats table
         s = df[col_choice]
@@ -71,7 +71,7 @@ def show():
             "IQR": s.quantile(0.75) - s.quantile(0.25)
         }
         st.dataframe(pd.DataFrame(stats, index=["Value"]).T.rename(columns={"Value": col_choice}),
-                     use_container_width=True)
+                     width="stretch")
     else:
         vc = df[col_choice].value_counts().reset_index()
         vc.columns = [col_choice, "count"]
@@ -80,13 +80,13 @@ def show():
                      color=col_choice, color_discrete_sequence=COLOR_SEQ,
                      template=PLOT_THEME)
         fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         fig2 = px.pie(vc, names=col_choice, values="count",
                       title=f"Share · {col_choice}",
                       color_discrete_sequence=COLOR_SEQ, template=PLOT_THEME)
         fig2.update_layout(paper_bgcolor="rgba(0,0,0,0)")
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width="stretch")
 
     # ── 3. Bivariate ──────────────────────────────────────────────────────────
     st.markdown('<div class="section-header">3 · Bivariate Analysis</div>', unsafe_allow_html=True)
@@ -105,7 +105,7 @@ def show():
                      title=f"{x_var} vs {y_var}",
                      color_discrete_sequence=COLOR_SEQ, template=PLOT_THEME)
     fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # ── 4. Multivariate ───────────────────────────────────────────────────────
     st.markdown('<div class="section-header">4 · Multivariate · Pair Plot (sample)</div>', unsafe_allow_html=True)
@@ -125,7 +125,7 @@ def show():
             fig = px.scatter_matrix(sample, dimensions=chosen, opacity=0.4, template=PLOT_THEME)
         fig.update_traces(diagonal_visible=False)
         fig.update_layout(height=600, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ── 5. Categorical breakdown ───────────────────────────────────────────────
     st.markdown('<div class="section-header">5 · Categorical Breakdown</div>', unsafe_allow_html=True)
@@ -136,4 +136,4 @@ def show():
                      color_discrete_sequence=COLOR_SEQ,
                      title=f"{num_sel} by {cat_sel}", template=PLOT_THEME)
         fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
